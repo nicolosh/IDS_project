@@ -27,22 +27,22 @@ err = 0.05;         % measure loss percentage
 cam = Camera(env, theta, 10, eFoV);
 
 %% Starting Point of Real Trajcetory
-pos = randi([min(min(B)),max(max(B))], 1, 2);
+pos = randi([min(min(B)), max(max(B))], 1, 2);
 bar = [(min(B(:,1)) + max(B(:,1)))/2, (min(B(:,2)) + max(B(:,2)))/2];
 
 % verify if starting point is on environment borders
 [~, on] = inpolygon(pos(1), pos(2), B(:,1), B(:,2));
 if ~on
     while ~on
-        pos = randi([min(min(B)),max(max(B))],1,2);
-        [~,on] = inpolygon(pos(1),pos(2),B(:,1),B(:,2));
+        pos = randi([min(min(B)), max(max(B))], 1, 2);
+        [~,on] = inpolygon(pos(1), pos(2), B(:,1), B(:,2));
     end
 end
 % initial velocity
 v = bar-pos;
 
 % checks if a small step in the direction of the velocity would keep the object within env
-in = inpolygon(pos(1) + v(1)/100,pos(2) + v(2)/100, B(:,1), B(:,2));
+in = inpolygon(pos(1) + v(1)/100, pos(2) + v(2)/100, B(:,1), B(:,2));
 if ~in
     v = -v;
 end
@@ -52,7 +52,7 @@ a = 1;                        % speed [m/s]
 Tc = 0.1;                     % sampling period [s]
 v = a*(v)/norm(v);            % speed vector [vx,vy]
 x = [pos,v];                  % state vector
-sigma_q = 15;                 % process noise variance
+sigma_q = 15;                 % process noise stdDev
 
 % process noise covariance matrix
 %Qc = q*[0 0 0 0;0 0 0 0;0 0 1 0;0 0 0 1]; % random speed (q = 0.x)
@@ -139,6 +139,7 @@ stdDevMax(1+s) = max((stdDev(1,1) + stdDev(2,2))/2 , T*(stdDev(3,3) + stdDev(4,4
 
 zoom(:,1) = [cam.zMax; 3];
 zoom(:,1+s) = [cam.zMax; 3];
+
 realZ(1,2) = cam.zMax;
 realZ(1+s,2) = cam.zMax;
 
