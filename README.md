@@ -17,7 +17,7 @@ Multi-Camera surveillance systems have become a modern trend in many fields both
 ### Project Abstract
 The aim of this project is to find a possible solution to the Interactive Surveillance problem using multiple UAV mounted cameras, from a top down perspective, in known environments. The coordinated patrolling problem is approached in a distributed fashion using a Bayesian-based Greedy algorithm with State Exchange. The results of this strategy are tested in restricted environments. Furthermore, the overall performance is evaluated on large scale environments. Kalman’s theory is employed to implement a smart target tracking algorithm with camera zoom optimized for target containment and information loss minimization. Several simulations are performed tracking a target with different trajectory models and varying the sampling frequency of the filter and the accuracy of the detection. Finally, the robustness of such an algorithm to measurement errors and camera failures is put to the test.
 
-For the technical results complete dissertation and the detailed description of the adopted strategies you can refer to the [Project Report :memo:](main.pdf).
+For the technical results complete dissertation and the detailed description of the adopted strategies you can refer to the [Project Report :memo:](/report/main.pdf).
 
 ### Working Simulation
 The results achieved with this project can be clearly appreciated in the following simulation. Indeed, the Interactive Sourveillance task performed by our UAV mounted camera system can be divided in 4 steps:
