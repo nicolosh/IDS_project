@@ -8,10 +8,11 @@
 /src/getAllCycles_delete.m
 /src/splitCycles_delete.m
 /report/bargellesi_et_al_2020.pdf
-
+/report/main.pdf
+/report/main.tex
 
 # Ignore specific directories
-/report/images/
+/report/images
 /.vscode
 
 # Ignore all .asv (Auto Save) files
