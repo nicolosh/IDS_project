@@ -8,6 +8,7 @@
 /src/getAllCycles_delete.m
 /src/splitCycles_delete.m
 /report/bargellesi_et_al_2020.pdf
+/READMEold.md
 
 # Ignore specific directories
 /report/images/
@@ -71,8 +72,8 @@ rtw/
 *.xlsx
 # *.pdf
 *.png
-# *.jpg
-# *.gif
+*.jpg
+#*.gif
 *.bmp
 *.tif
 *.tiff
