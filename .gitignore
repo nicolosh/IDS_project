@@ -14,6 +14,8 @@
 # Ignore specific directories
 /report/images
 /.vscode
+/report
+
 
 # Ignore all .asv (Auto Save) files
 *.asv
