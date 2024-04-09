@@ -16,49 +16,30 @@ function [Em, Am, A] = envEdges(V, Vm, Vmap, res)
     Em = [];         % stores the motion edges of the graph
     Ev = [];         % stores the vision edges of the graph
         
+    % Construct edges for movement and vision
     for i = 1:size(Vm,1)
-        % MOVEMENT/MOTION
-        index = find(ismembertol(Vm,[Vm(i,1)+res Vm(i,2)],'ByRows',true));
-        if(sum(index) > 0)        
-            Em = [Em; i index];
+        % MOVEMENT/MOTION in x-direction
+        index_x = find(ismembertol(Vm, [Vm(i, 1) + res, Vm(i, 2)], 'ByRows', true));
+        if sum(index_x) > 0
+            Em = [Em; i, index_x];
         end
-        index = find(ismembertol(Vm,[Vm(i,1) Vm(i,2)+res],'ByRows',true));
-        if(sum(index) > 0)
-            Em = [Em; i index];
+        % Check for movement in y-direction
+        index_y = find(ismembertol(Vm, [Vm(i, 1), Vm(i, 2) + res], 'ByRows', true));
+        if sum(index_y) > 0
+            Em = [Em; i, index_y];
         end
             
-        % VISION
-        index = find(ismembertol(V,[Vm(i,1)-res Vm(i,2)],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1)+res Vm(i,2)],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1) Vm(i,2)-res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1) Vm(i,2)+res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1)-res Vm(i,2)-res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1)-res Vm(i,2)+res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1)+res Vm(i,2)+res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
-        end
-        index = find(ismembertol(V,[Vm(i,1)+res Vm(i,2)-res],'ByRows',true));
-        if(sum(index) > 0)
-            Ev = [Ev; Vmap(i) index];
+        % VISION (in all directions)
+        for dx = -res:res
+            for dy = -res:res
+                if dx == 0 && dy == 0
+                    continue;           % Skip the case of no displacement
+                end
+                index_vision = find(ismembertol(V, [Vm(i, 1) + dx, Vm(i, 2) + dy], 'ByRows', true));
+                if sum(index_vision) > 0
+                    Ev = [Ev; Vmap(i), index_vision];
+                end
+            end
         end
     end
 
