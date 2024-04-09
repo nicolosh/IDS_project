@@ -2,19 +2,6 @@ clear
 close all
 clc
 
-%% Coordinated Surveillance
-N    = 200;                   % simulation duration
-Npre = 500;                   % transient phase duration
-Simulation_preprocessing;     % load data
-
-% SEBS Initialization 
-Np = NoC;             % all cameras as patrolling agents
-s1 = round(0.5/Tc);   % step size
-env.IvReset();
-env.heatReset();
-d = zeros(NoC, 2);    % stores the cameras displacement
-detected = false;     % has a target been detected ?
-
 %% ===================== Transient phase of the simulation ========================
 % The transient phase in a simulation is often used to allow the system to reach a steady state before the actual data collection begins. 
 % The transient phase here allows the cameras to spread out and cover the environment,
@@ -25,36 +12,14 @@ detected = false;     % has a target been detected ?
 % N.B env.v = its rows represent the coordinates of a vertex in env
 
 disp('====================== Start of the Simulation =======================');
-for t = 1:Npre
-    Sa = zeros(1, length(env.V));             % Initialize vertex intentions
-    for n = randperm(NoC)                     % iterating over cameras randomly
-        % SEBS
-        if mod(t, s1) == 0
-            v(n) = C(n).SEBS(env, Np, Sa, L, M);       % Select next step
-            d(n,:) = env.Vm(v(n),:) - C(n).X(1:2);     % displacement for each n-th camera
+%% Coordinated Surveillance
+Np = NoC;                     % all cameras as patrolling agents
+env.IvReset();
+env.heatReset();
+detected = false;             % has a target been detected ?
+Simulation_preprocessing;     % load data
+disp('====================== End of the Transient phase =======================');
 
-            % Share Intentions between cameras, with a chance of transmission errors 
-            view = env.A(env.Vmap(v(n)), :);         % vertices that are visible from v(n)
-            view(1,env.Vmap(v(n))) = 1;
-            % Simulate transmission errors
-            if randi([0,100])/100 > e_tx
-                Sa(logical(view)) = Sa(logical(view)) + 1; % increments the intention of all vertices that are visible from v(n).
-            end
-        end
-    end
-    % MOVE cameras and updates the environment's idleness and heat, with a chance of transmission errors
-    for n = 1:NoC
-       C(n).V = v(n);                          % target vertex of the n-th camera to v(n)                  
-       C(n).X(1:2) = C(n).X(1:2) + d(n,:)/s1;  % update the position of current camera
-       % Simulate transmission errors
-       if randi([0,100])/100 > e_tx
-            env.IvUpdate(t*Tc, C(n).V)          % Update Idleness of vertex C(n).V
-            env.deheat(C(n).V)                  % Deheat viewed vertices by camera n (decreases the heat of the vertex C(n).V in the environment, 
-                                                % simulating the effect of the camera's presence)
-       end
-    end
-end
-% ============================== Transiente phase end =============================
 
 %% Tracking Control Initialization
 nL = 0;            % loss counter
@@ -69,7 +34,7 @@ hctrl.vh0 = 0;
 open_system('control.slx');
 
 figure()
-for t = Npre+1:N+Npre
+for t = (settlingTime + 1):(simulationTime + settlingTime)
     env.plotBorders();
     hold on
     % env.plotGraphs();
