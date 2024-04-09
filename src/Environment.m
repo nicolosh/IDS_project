@@ -20,28 +20,40 @@ classdef Environment < handle
     end
     methods
         % CONSTRUCTOR
-        function env = Environment(b, nfz)
+        function env = Environment(b, nfz, res)
             env.B = b;
             env.NFZ = nfz;
-        end
-        
-        % CELLULARIZATION
-        function cellularize(env, res)
+            
+            % CELLULARIZATION
             env.Res = res;
             % Vertices
-            [env.V,env.Vm,env.Vmap] = envCell(env.B, env.NFZ, res);
+            [env.V, env.Vm, env.Vmap] = envCell(env.B, env.NFZ, env.Res);
+            % Build Edges of the graph representing the env
+            [env.Em, env.Am, env.A]   = envEdges(env.V, env.Vm, env.Vmap, env.Res);
+            % Remap from movement to environment domain
+            env.E = [env.Vmap(env.Em(:, 1)), env.Vmap(env.Em(:, 2))];
             % Initialize Heat
             env.heatReset();
-            % Build Edges of the graph representing the env
-            [env.Em,env.Am,env.A] = envEdges(env.V, env.Vm, env.Vmap, res);
-            env.E = remapEdges(env.Em,env.Vmap); % Remap from movement to environment domain
             % Initialize Idleness
             env.IvReset();
         end
         
+        function in = is_in_Border(env, x_pos, y_pos)
+            in = inpolygon(x_pos, y_pos, env.B(:,1), env.B(:,2));
+        end
+          
+        function in = is_in_NoFlyZone(env, x_pos, y_pos)
+            tmp = zeros(1,length(env.NFZ));
+            for i=1:length(env.NFZ)
+                tmp(i) = inpolygon(x_pos, y_pos, env.NFZ{i}(:,1), env.NFZ{i}(:,2));
+            end
+            in = any(tmp);
+        end
+          
+
         % RESET HEAT
         function heatReset(env)
-            env.H = ones(1,length(env.V));
+            env.H = ones(1, length(env.V));
         end
         
         % ============ ADD / UPDATE HEAT MAP ================
@@ -96,10 +108,10 @@ classdef Environment < handle
         
         % PLOT BORDERS of the environment
         function plotBorders(env)
-            plot(polyshape(env.B(:,1),env.B(:,2)),'FaceAlpha',0.2);
+            plot(polyshape(env.B(:, 1), env.B(:, 2)), 'cyan', 'FaceAlpha', 0.2);
             hold on
             for n = 1:length(env.NFZ)
-                plot(polyshape(env.NFZ{n}(:,1),env.NFZ{n}(:,2)),'FaceAlpha',0.2);
+                plot(polyshape(env.NFZ{n}(:, 1), env.NFZ{n}(:, 2)),'FaceColor','red','FaceAlpha', 0.3);
             end
             hold off
             axis equal
@@ -107,16 +119,14 @@ classdef Environment < handle
 
         % PLOT GRAPHS of the environment
         function plotGraphs(env)
-            plot(polyshape(env.B(:,1),env.B(:,2)),'FaceColor','cyan','FaceAlpha',0.2); % borders of env
+            figure()
+            plotBorders(env)
             hold on
-            plot(graph(env.A),'XData',env.V(:,1),'YData',env.V(:,2), 'EdgeColor', 'magenta', 'NodeColor','magenta','LineWidth', 1.5); % vision graph
-            plot(graph(env.E(:,1),env.E(:,2),[],length(env.V)),'XData',env.V(:,1),'YData',env.V(:,2),'LineWidth', 2, 'EdgeColor', 'blue', 'NodeColor','blue'); % movement graph
-            for n = 1:length(env.NFZ)
-                plot(polyshape(env.NFZ{n}(:,1),env.NFZ{n}(:,2)),'FaceColor','red','FaceAlpha', 0.3);
-            end
+            plot(graph(env.A),'XData', env.V(:, 1),'YData', env.V(:, 2), 'EdgeColor', 'magenta', 'NodeColor','magenta','LineWidth', 1.5); % vision graph
+            plot(graph(env.E(:, 1), env.E(:, 2), [], length(env.V)),'XData', env.V(:, 1), 'YData', env.V(:, 2),'LineWidth', 2, 'EdgeColor', 'blue', 'NodeColor','blue'); % movement graph
             hold off
             axis equal
-            legend('Environment borders','Vision graph','Movement graph','NFZ')
+            legend('Environment borders','NFZ','Vision graph','Movement graph')
         end
         
         % PLOT WEIGHT
