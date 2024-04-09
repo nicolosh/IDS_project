@@ -29,17 +29,4 @@ function [kp, ki, kd] = get_PID(sysP, wgc, phim, alpha)
     %   Calculate the integral and derivative gains: The integral gain is calculated as kp/ti,
     %   and the derivative gain is calculated as kp*td.
     % 
-    % Convert phase margin from degrees to radians
-    phim = deg2rad(phim);
-
-    % Calculate the gain KP based on the gain crossover frequency and phase margin
-    kp = 1 / abs(evalfr(sysP, 1j*wgc)) * sqrt(1 + tan(phim)^2);
-
-    % Calculate the integral time TI and the derivative time TD
-    TI = sqrt((1 + tan(phim)^2) / (wgc^2 * alpha));
-    TD = alpha * TI;
-
-    % Calculate the integral gain KI and the derivative gain KD
-    ki = kp / TI;
-    kd = kp * TD;
 end
