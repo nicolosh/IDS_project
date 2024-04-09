@@ -31,7 +31,7 @@ function [V, Vm, Vmap] = envCell(B, NFZ, res)
     end
 
     % Check if inside Borders
-    [in,on] = inpolygon(gridPoints(:,1), gridPoints(:,2), B(:,1), B(:,2));
+    [in, on] = inpolygon(gridPoints(:,1), gridPoints(:,2), B(:,1), B(:,2));
 
     % Construct Vertices
     V = [];         % cells vertices           

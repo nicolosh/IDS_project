@@ -48,22 +48,22 @@ end
 L = 0.1;
 M = 9*length(env.V)/NoC;
 
-%% Starting Point of Real Trajcetory
-pos = randi([min(min(B)), max(max(B))],1,2);
-bar = [(min(B(:,1)) + max(B(:,1)))/2, (min(B(:,2)) + max(B(:,2)))/2]; % mid-point of env boundaries
+%% Starting Point of Real target Trajectory
+pos = randi([min(min(env.B)), max(max(env.B))],1,2);
+bar = [(min(env.B(:,1)) + max(env.B(:,1)))/2, (min(env.B(:,2)) + max(env.B(:,2)))/2]; % mid-point of env boundaries
 
 % verify if starting point is on environment borders:
 % if pos is not on the borders, it generates a new pos until it finds one that is on the borders.
-[~, on] = inpolygon(pos(1), pos(2), B(:,1), B(:,2));
+[~, on] = inpolygon(pos(1), pos(2), env.B(:,1), env.B(:,2));
 if ~on
     while ~on
-        pos = randi([min(min(B)), max(max(B))], 1, 2);
-        [~,on] = inpolygon(pos(1), pos(2), B(:,1), B(:,2));
+        pos = randi([min(min(env.B)), max(max(env.B))], 1, 2);
+        [~,on] = inpolygon(pos(1), pos(2), env.B(:,1), env.B(:,2));
     end
 end
 vT = bar - pos;
 % verify if still within env by a small step in the velocity direction
-in = inpolygon(pos(1) + vT(1)/100, pos(2) + vT(2)/100, B(:,1), B(:,2));
+in = inpolygon(pos(1) + vT(1)/100, pos(2) + vT(2)/100, env.B(:,1), env.B(:,2));
 if ~in % not towards inwards into the env  
     vT = -vT;
 end

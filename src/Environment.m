@@ -62,7 +62,7 @@ classdef Environment < handle
         % The heat distribution is represented by a kernel, and the size, shape, 
         % and intensity of the kernel are determined by the parameters ksize, sigma, and alpha, respectively.
         function addHeat(env, ksize, alpha, sigma, v)    % sigma is stdDev, alpha = Amplitude of the distribution
-            [R,C] = ndgrid(1:2*ksize-1, 1:2*ksize-1);
+            [R, C] = ndgrid(1:2*ksize-1, 1:2*ksize-1);
             exponent = ((R-ksize).^2 + (C-ksize).^2)./(2*sigma); % exponent based on the distance from the kernel center
             kernel = alpha*(exp(-exponent)); % Gaussian kernel computation
             % Allign the kernel to Grid

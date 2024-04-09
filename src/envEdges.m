@@ -17,7 +17,7 @@ function [Em, Am, A] = envEdges(V, Vm, Vmap, res)
     Ev = [];         % stores the vision edges of the graph
         
     % Construct edges for movement and vision
-    for i = 1:size(Vm,1)
+    for i = 1:size(Vm, 1)
         % MOVEMENT/MOTION in x-direction
         index_x = find(ismembertol(Vm, [Vm(i, 1) + res, Vm(i, 2)], 'ByRows', true));
         if sum(index_x) > 0
