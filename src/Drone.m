@@ -22,13 +22,13 @@ classdef Drone < handle
             drone.zMax   = drone.FoV/tan(theta*pi/180);
             drone.zmin   = drone.zMax/4;
             drone.X      = [env.Vm(drone.V, 1), env.Vm(drone.V, 2), drone.zMax];
-            drone.GPSdev = 0.05;
+            drone.GPSdev = 0.2;
             drone.noisyX = [0, 0, 0];
         end
         
 
         function noisyX = getNoisyX(drone)
-            drone.X = drone.GPSdev*randn(1, length(drone.X)) + drone.X;
+            drone.X = drone.GPSdev*randn(1, length(drone.X)) + drone.X; % calibrated unbiases sensor
             noisyX  = drone.X;
         end
 
