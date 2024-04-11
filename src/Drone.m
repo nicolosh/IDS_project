@@ -1,20 +1,24 @@
 classdef Drone < handle
     properties
-        Task  % Patrolling(0)/Tracking(1)
-        Theta % Field of View Angle
-        FoV   % Field of View or Environment resolution (as in PDF)
-        zmin  % Minimum Height
-        zMax  % Maximum Height
-        eFoV  % Detection Error (Percentage of FoV)
-        V     % Vertex (in movement domain)
-        X     % Position [x,y,z]
+        ID     % number of the drone
+        Task   % Patrolling(0)/Tracking(1)
+        Theta  % Field of View Angle
+        FoV    % Field of View or Environment resolution (as in PDF)
+        zmin   % Minimum Height
+        zMax   % Maximum Height
+        eFoV   % Detection Error (Percentage of FoV)
+        V      % Vertex (in movement domain)
+        X      % Position [x,y,z]
         noisyX % Noisy Position [x,y,z]
-        GPSdev
+        GPSdev % standard deviation of GPS
+        speed  % drones constant speed for moving between vertices
     end
     methods
         % CONSTRUCTOR
-        function drone = Drone(env, theta, v, efov)
+        function drone = Drone(env, theta, v, efov, ID)
             drone.Task   = 0;
+            drone.speed  = 10; 
+            drone.ID     = ID;
             drone.Theta  = theta;
             drone.V      = v;
             drone.FoV    = env.Res;
@@ -28,7 +32,7 @@ classdef Drone < handle
         
 
         function noisyX = getNoisyX(drone)
-            drone.X = drone.GPSdev*randn(1, length(drone.X)) + drone.X; % calibrated unbiases sensor
+            drone.X = drone.GPSdev*randn(1, length(drone.X)) + drone.X; % calibrated unbiased sensor
             noisyX  = drone.X;
         end
 
@@ -59,7 +63,7 @@ classdef Drone < handle
             PmGS = []; % probability of moving to vA given the gain Ga and Sa events
             for k = vA
                 % formula 15
-                Ga = min(sum(env.Iv(logical(env.A(env.Vmap(k),:)))), M);     % minimal average idleness of current vertex vk
+                Ga = min(drone.speed/env.Res*sum(env.Iv(logical(env.A(env.Vmap(k),:)))), M);     % minimal average idleness of current vertex vk
                 
                 % Convert Heat in Prior
                 Pm = sum(env.H(logical(env.A(env.Vmap(k),:))))/Htot; % formula (20) = probability of moving to vA       
@@ -118,9 +122,9 @@ classdef Drone < handle
         % used to visualize the position and field of view of a camera cam in a 2D plot
         function plot(drone)
             if drone.Task == 0 % patrolling 
-                scatter(drone.X(1), drone.X(2), 30, 'filled','v','k')
+                scatter(drone.X(1), drone.X(2), 30, 'filled','v','k');
             else % tracking the target
-                scatter(drone.X(1), drone.X(2), 30, 'filled','v','g')
+                scatter(drone.X(1), drone.X(2), 30, 'filled','v','g');
             end
             rectangle('Position', [drone.X(1)-drone.FoV drone.X(2)-drone.FoV 2*drone.FoV 2*drone.FoV]) % square of the camera's drone FoV
             axis equal
