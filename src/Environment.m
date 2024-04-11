@@ -43,7 +43,7 @@ classdef Environment < handle
         end
           
         function in = is_in_NoFlyZone(env, x_pos, y_pos)
-            tmp = zeros(1,length(env.NFZ));
+            tmp = zeros(1, length(env.NFZ));
             for i=1:length(env.NFZ)
                 tmp(i) = inpolygon(x_pos, y_pos, env.NFZ{i}(:,1), env.NFZ{i}(:,2));
             end
@@ -108,10 +108,10 @@ classdef Environment < handle
         
         % PLOT BORDERS of the environment
         function plotBorders(env)
-            plot(polyshape(env.B(:, 1), env.B(:, 2)), 'FaceColor','cyan', 'FaceAlpha', 0.2);
+            plot(polyshape(env.B(:,1),env.B(:,2)),'FaceColor','cyan', 'FaceAlpha', 0.2,'HandleVisibility','off');
             hold on
             for n = 1:length(env.NFZ)
-                plot(polyshape(env.NFZ{n}(:, 1), env.NFZ{n}(:, 2)),'FaceColor','green','FaceAlpha', 0.3);
+                plot(polyshape(env.NFZ{n}(:,1),env.NFZ{n}(:,2)),'FaceColor','green','FaceAlpha', 0.3,'HandleVisibility','off');
             end
             hold off
             axis equal
@@ -119,13 +119,17 @@ classdef Environment < handle
 
         % PLOT GRAPHS of the environment
         function plotGraphs(env)
-            plotBorders(env);
+            plot(polyshape(env.B(:, 1), env.B(:, 2)), 'FaceColor','cyan', 'FaceAlpha', 0.2);
             hold on
             plot(graph(env.A),'XData', env.V(:, 1),'YData', env.V(:, 2), 'EdgeColor', 'magenta', 'NodeColor','magenta','LineWidth', 1.5); % vision graph
             plot(graph(env.E(:, 1), env.E(:, 2), [], length(env.V)),'XData', env.V(:, 1), 'YData', env.V(:, 2),'LineWidth', 2, 'EdgeColor', 'blue', 'NodeColor','blue'); % movement graph
-            hold off
+            for n = 1:length(env.NFZ)
+                plot(polyshape(env.NFZ{n}(:, 1), env.NFZ{n}(:, 2)),'FaceColor','green','FaceAlpha', 0.3);
+            end
             axis equal
-            legend('Environment borders','NFZ','Vision graph','Movement graph')
+            hold on
+            hold off
+            legend('Environment borders','Vision graph','Movement graph','NFZ','Location','best');
         end
         
         % PLOT WEIGHT
