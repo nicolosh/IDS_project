@@ -3,7 +3,7 @@
 % ========================== Solves for beta and solves the NL optimization problem =====================
 % ========================== for finding the optimal values of z and k
 
-load('Data/C.mat')      % load desired environment
+load('C:\Users\nicol\OneDrive\Desktop\IDS\Course mine - 2022-2023\Exam\IDS_project\src\Data\C.mat')      % load desired environment
 env = C;                % rename selected environment
 Ts = 5;                 % settling time for P before starting zoom
 theta = 40;             % angle of view (1m^2 from 2m)
@@ -13,8 +13,10 @@ err = 0.05;             % measure loss percentage
 sigma_P = 0.25;         % kalman tracking/prediction error stdDev
 
 % Generate Camera
-cam = Camera(env, theta, 1, eFoV);
+drone = Drone(env, theta, 1, eFoV, 1);
 
+figure()
+env.plotBorders();
 %% Coverage Factor Analysis
 % ********* TRIAL AND ERROR *****************
 beta = 0.62;
@@ -80,7 +82,7 @@ ax.Legend.Box = 'on';
 y = [];
 t = 1:5:100;
 for gam = t
-    [z, k] = cam.optimalZoom(gam, sigma_P);
+    [z, k] = drone.optimalZoom(gam, sigma_P);
     x = [z;k];
     y = [y x];
 end
@@ -91,7 +93,7 @@ P1 = 0.13;
 y1 = [];
 t1 = 1:50;
 for gamma = t1
-    [z,k] = cam.optimalZoom(gamma,P1);
+    [z,k] = drone.optimalZoom(gamma,P1);
     x1 = [z;k];
     y1 = [y1 x1];
 end
@@ -100,7 +102,7 @@ P2 = 0.19;
 y2 = [];
 t2 = 1:50;
 for gamma = t2
-    [z,k] = cam.optimalZoom(gamma,P2);
+    [z,k] = drone.optimalZoom(gamma,P2);
     x2 = [z;k];
     y2 = [y2 x2];
 end
@@ -109,7 +111,7 @@ P3 = 0.25;
 y3 = [];
 t3 = 1:50;
 for gamma = t3
-    [z,k] = cam.optimalZoom(gamma,P3);
+    [z,k] = drone.optimalZoom(gamma,P3);
     x3 = [z;k];
     y3 = [y3 x3];
 end
@@ -126,7 +128,7 @@ title('$\gamma-test$','interpreter','Latex','FontSize', 14);
 y = [];
 t = 0.05:0.005:0.55;
 for sigma_p = t
-    [z, k] = cam.optimalZoom(gamma, sigma_p);
+    [z, k] = drone.optimalZoom(gamma, sigma_p);
     x = [z;k];
     y = [y x];
 end
@@ -135,8 +137,8 @@ figure()
 plot(t, y(1,:)) % plot of z*
 hold on
 plot(t, y(2,:)) % plot of k*
-yline(cam.zmin,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
-yline(cam.zMax,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zmin,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zMax,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
 % grid(gca,'minor')
 % grid on
 % ax = gca;
@@ -155,9 +157,9 @@ title('$\sigma_p-test$','interpreter','Latex','FontSize', 14);
 
 %% GRAFICI FINALI
 tDown= 0.05:0.005:0.085;
-kDown= (y(1,1:8)*tan(cam.Theta*pi/180))./tDown;
+kDown= (y(1,1:8)*tan(drone.Theta*pi/180))./tDown;
 tUp = 0.50:0.01:0.55;
-kUp= (cam.zMax*tan(cam.Theta*pi/180))./tUp;
+kUp= (drone.zMax*tan(drone.Theta*pi/180))./tUp;
 
 figure()
 subplot(2,1,1)
@@ -165,8 +167,8 @@ plot(t,y(1,:),'LineWidth',1)
 title('io')
 hold on;
 
-yline(cam.zmin,'--','LineWidth',.8,'Color',[0, 0.4470, 0.7410]);
-yline(cam.zMax,'--','LineWidth',.8,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zmin,'--','LineWidth',.8,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zMax,'--','LineWidth',.8,'Color',[0, 0.4470, 0.7410]);
 xline(0.5,'--','LineWidth',.8,'Color','k');
 xline(0.085,'--','LineWidth',.8,'Color','k');
 grid on
@@ -208,8 +210,8 @@ plot(t1,y1(1,:),'LineWidth',1)
 hold on;
 plot(t2,y2(1,:),'LineWidth',1)
 plot(t3,y3(1,:),'LineWidth',1)
-yline(cam.zmin,'--','LineWidth',1,'Color','k');
-yline(cam.zMax,'--','LineWidth',1,'Color','k');
+yline(drone.zmin,'--','LineWidth',1,'Color','k');
+yline(drone.zMax,'--','LineWidth',1,'Color','k');
 %grid(gca,'minor')
 grid on
 ax = gca;
@@ -253,8 +255,8 @@ ax.Legend.Box = 'on';
 figure()
 yyaxis left
 plot(t,y(1,:),'LineWidth',1.5)
-yline(cam.zmin,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
-yline(cam.zMax,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zmin,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
+yline(drone.zMax,'--','LineWidth',1.5,'Color',[0, 0.4470, 0.7410]);
 grid(gca,'minor')
 grid on
 ax = gca;

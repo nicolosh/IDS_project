@@ -26,7 +26,7 @@ classdef Drone < handle
             drone.zMax   = drone.FoV/tan(theta*pi/180);
             drone.zmin   = drone.zMax/4;
             drone.X      = [env.Vm(drone.V, 1), env.Vm(drone.V, 2), drone.zMax];
-            drone.GPSdev = 0.2;
+            drone.GPSdev = 0.1;
             drone.noisyX = [0, 0, 0];
         end
         
