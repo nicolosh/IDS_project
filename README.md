@@ -1,53 +1,44 @@
-# IDS_Project
-Intelligent Distributed Systems Project - 2022-2023
+# Distributed Extended Kalman Filter (EKF) Simultaneous Localization and Mapping (SLAM) with known correspondence
 
+Distributed Extended Kalman Filter Simultaneous Localization and Mapping with known data association.
 
-## Authors
+The code in this repository was submitted in fulfillment of the requirements for the course '140472 - Distributed Systems for Measurement and Automation'.
 
-- [Nicolò Cavalieri](https://www.linkedin.com/in/nicolò-cavalieri-263774194/) - MSc in Mechatronics Engineering, University of Trento
-- [Federico Burgio](https://github.com/FedericoBurgio) - MSc in Mechatronics Engineering, University of Trento
+## Resources
+- ***Probabilistic Robotics (Intelligent Robotics and Autonomous Agents)***. Sebastian Thrun, Wolfram Burgard, and Dieter Fox. 2005. 
+- ***Distributed Cooperative SLAM using Information Consensus Filter***. Rajnikant Sharma, Clark N. Taylor, David W. Casbeer
+- ***Decentralised SLAM with Low-Bandwidth Communication for Teams of Vehicles***. Eric Nettleton et al.
+- [UTIAS Multi-Robot Cooperative Localization and Mapping Dataset](http://asrl.utias.utoronto.ca/datasets/mrclam/index.html)
 
-### Repository description
-In the folder [course_2022_2023](https://github.com/nicolosh/IntelligentDistributedSystems_Project/tree/main/course_2022_2023) you can find all the contents, divided topic by topic, covered during the edition of 2022-2023 of the Intelligent Distributed Systems course held by professor Daniele Fontanelli (Trento, Italy) while in the folder [course_lab](https://github.com/nicolosh/IntelligentDistributedSystems_Project/tree/main/course_lab) there are the main algorithms developed in class which can be useful for the exam project.
+## Repository Structure
+- `./assets/` folder contains 9 datasets for the assignment
+- `./include/` folder contains the implementation of the classes used for the simulation
+- `./utils/`   folder contains miscellaneous function for loading, resampling and animating the dataset
 
-# Name of the project (TO ADD)
-<img align="right" height="190" src="home-security-drone.jpg">
-Multi-Camera surveillance systems have become a modern trend in many fields both for research and for the industry. These systems are being increasingly used to enhance safety and security in public places such as parks, airports, and banks, as well as in restricted areas like government and military facilities. Furthermore, the possibility to mount cameras on Unmanned Aerial Vehicles (UAVs) extends the capabilities of these surveillance systems to a whole new level. Indeed, the employment of flying cameras allow for a substantial reconfigurability of the network and enable for new perspectives on the environment and wider coverage.
+The root folder contains three main scripts: `./main.m`, `./init.m` and `./config.m`
+- `./config.m` contains a Matlab structure with the user defined simulation parameters
+- `./init.m`   loads the dataset, it resamples it and initializes the Agents in the simulation
+- `./main.m`   is the file to execute to perform the simulation. It contains the main simulation loop and a call to the animation function
 
-### Project Abstract
-The aim of this project is to find a possible solution to the Interactive Surveillance problem using multiple UAV mounted cameras, from a top down perspective, in known environments. The coordinated patrolling problem is approached in a distributed fashion using a Bayesian-based Greedy algorithm with State Exchange. The results of this strategy are tested in restricted environments. Furthermore, the overall performance is evaluated on large scale environments. Kalman’s theory is employed to implement a smart target tracking algorithm with camera zoom optimized for target containment and information loss minimization. Several simulations are performed tracking a target with different trajectory models and varying the sampling frequency of the filter and the accuracy of the detection. Finally, the robustness of such an algorithm to measurement errors and camera failures is put to the test.
+## Results
 
-For the technical results complete dissertation and the detailed description of the adopted strategies you can refer to the [Project Report :memo:](/report).
+The comparison of the Distributed EKF SLAM algorithm with the ground truth for the second dataset is displayed below:
 
-### Working Simulation
-The results achieved with this project can be clearly appreciated in the following simulation. Indeed, the Interactive Sourveillance task performed by our UAV mounted camera system can be divided in 4 steps:
-1. All the agents of the camera network patroll the environment sharing information to autonomously select the most suitable direction to follow
-2. An intruder enters the environment and it is soon detected from one of our UAV cameras
-3. The camera begins the tracking task adjusting the zoom managing the tradeoff between tracking robustness and information gathering
-4. On target loss the tracking camera returns to the tracking task, asking for the support of other UAVs in order to maximize the probability of tracking recovery
+![](https://github.com/marcope-98/DistributedEKF-SLAM/blob/main/media/dataset2.gif)
 
+## Documentation:
 
-### Project Organization
-```
-.
-├── Data/                                       : Contains precompiled environments
-├── src/                                        : Contains developed classes and testing files
-├── Camera.m                                    : Class defining a UAV camera object
-├── Environment.m                               : Class defining the environment
-├── Optimal_zoom.m                              : Routine to test the smart zoom feature
-├── SEBS.m                                      : Routine to test the distributed approach to the patrolling problem
-├── Simulation.m                                : Routine to test the complete system on large scale environments
-├── Simulation_preprocessing.m                  : Defines the Simulation parameters
-├── Tracking_Control.m                          : Routine to test the UAV movement system during the tracking task
-├── Tracking_indices.m                          : Routine to the tracking robustness
-├── envCell.m                                   : Function for environment cellularization
-├── envEdges.m                                  : Function defining the allowed movement in the cellularized environment
-├── kalman.m                                    : Function implementing the one step ahead Kalman filter
-├── remapEdges.m                                : Function returning the set of edges associated to the connected components of a graph
-├── main.pdf                                    : Project Report
-└── README.md                                   : Project Summary 
-```
+### Classes
 
-## License
+- [Actuator.m](doc/classes.md#Actuator)
+- [Agent.m](doc/classes.md#Agent)
+- [ekfSLAM.m](doc/classes.md#ekfSLAM)
+- [Message.m](doc/classes.md#Message)
+- [Sensor.m](doc/classes.md#Sensor)
+- [Server.m](doc/classes.md#Server)
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+### Helper Functions
+- [cvt_rb_to_xy.m](doc/functions.md#cvt_rb_to_xy)
+- [cvt_xy_to_rb.m](doc/functions.md#cvt_xy_to_rb)
+- [find_transformation.m](doc/functions.md#find_transformation)
+- [load_config.m](doc/functions.md#load_config)
